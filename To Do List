@@ -1,0 +1,114 @@
+import tkinter as tk
+
+# Create a variable to store the checkboxes and their state
+checkboxes = []
+checkbox_var = None  # Define globally
+
+
+# Function to check state of the checkboxes
+def print_checkbox_state(var):
+    state = var.get()
+
+
+# Function to remove a label
+def remove_label(label):
+    label.pack_forget()
+
+
+# Function for "New" button
+def new_button():
+    global checkbox_var
+
+    t = entry1.get()
+    if t:
+        # getting text from "entry1" textbox
+        labeltask = tk.Label(root, text="Task added successfully!", bg="#ffffff")
+        labeltask.pack()
+
+        checkbox_var = tk.IntVar()
+        checkbox = tk.Checkbutton(root, text=t, variable=checkbox_var, command=print_checkbox_state(checkbox_var),
+                                  anchor='w', font=("Helvetica", 10), bg="#ffffff")
+        checkbox.pack(anchor='w', padx=25)
+
+        checkboxes.append((checkbox, checkbox_var))
+
+        # clearing text from "entry1" textbox
+        entry1.delete(0, tk.END)
+
+        # removing label from screen after 3 seconds
+        root.after(3000, remove_label, labeltask)
+
+        print("Task added successfully!")
+    else:
+        # Showing Error for empty entry
+        labeltask = tk.Label(root, text="Empty Entry Cannot Be Added", bg="#ffffff")
+        labeltask.pack()
+        root.after(3000, remove_label, labeltask)
+
+
+# Function for "Remove" button
+def remove_button():
+    to_remove = []
+
+    # Iterate over a copy of checkboxes
+    for checkbox, var in checkboxes[:]:
+        if var.get():
+            checkbox.destroy()
+            to_remove.append((checkbox, var))
+
+    # Iterate over to_remove list and remove the items
+    for item in to_remove:
+        checkboxes.remove(item)
+        print("Checkbox removed!")
+
+    # if to_remove is empty then show error message
+    if not to_remove:
+        labeltask = tk.Label(root, text="No task selected!", bg="#ffffff")
+        labeltask.pack()
+    else:
+        labeltask = tk.Label(root, text="Task removed successfully!", bg="#ffffff")
+        labeltask.pack()
+
+    # removing label from screen after 3 second
+    root.after(3000, remove_label, labeltask)
+
+
+# Creating a new window
+root = tk.Tk()
+root.title("To-Do List")
+root.geometry("500x500")
+root.configure(bg='#ffffff')
+
+# Label1
+label1 = tk.Label(root, text="Hello!", font=("Helvetica", 14), bg='#ffffff')
+
+# Label2
+label2 = tk.Label(root, text="Welcome to your to-do list!", font=("Helvetica", 12), bg='#ffffff')
+
+# Label3
+label3 = tk.Label(root, text="Write your task below and click the \"New\" button", font=("Helvetica", 8), bg='#ffffff')
+
+# Text Box to enter a new task
+entry1 = tk.Entry(root, width=75)
+entry1.configure(bg="#f2f2f2")
+
+# Button1
+button1 = tk.Button(root, text="New", command=new_button, anchor='w')
+
+# Button2
+button2 = tk.Button(root, text="Remove", command=remove_button, anchor='w')
+
+# Packing Widgets
+label1.pack(pady=(10, 5))
+
+label2.pack(pady=(5, 20))
+
+label3.pack(pady=(15, 0))
+
+entry1.pack(pady=(15, 10))
+
+button1.pack(pady=(10, 30), anchor='w', padx=25)
+
+button2.pack(pady=(10, 10), anchor='w', padx=25)
+
+root.mainloop()
